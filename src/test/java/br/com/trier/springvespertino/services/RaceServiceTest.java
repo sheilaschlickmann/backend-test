@@ -38,7 +38,7 @@ class RaceServiceTest {
         ZonedDateTime data = ZonedDateTime.parse("2023-07-22T18:00:00Z");
         Race race = new Race(1, data, new Speedway(1, "teste", 10, new Country(1, "Texas") ), new Championship(1, "teste", 2023));
         when(raceRepository.save(any())).thenReturn(race);
-        var speed = raceService.insert(race);
+        raceService.insert(race);
         assertEquals(1, race.getId());
         assertEquals(ZonedDateTime.parse("2023-07-22T18:00:00Z"), race.getDate());
         assertEquals(new Speedway(1, "teste", 10, new Country(1, "Texas") ), race.getSpeedway());

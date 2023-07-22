@@ -34,7 +34,7 @@ class SpeedwayServiceTest {
     void insertSpeedWayTest() {
         Speedway speedway = new Speedway(1, "teste", 10, new Country(1, "Texas") );
         when(speedwayRepository.save(any())).thenReturn(speedway);
-        var speed = speedwayService.insert(speedway);
+        speedwayService.insert(speedway);
         assertEquals(1, speedway.getId());
         assertEquals("teste", speedway.getName());
         assertEquals(10, speedway.getSize());

@@ -4,10 +4,8 @@ import br.com.trier.springvespertino.models.Country;
 import br.com.trier.springvespertino.models.Pilot;
 import br.com.trier.springvespertino.models.Team;
 import br.com.trier.springvespertino.repositories.PilotRepository;
-import br.com.trier.springvespertino.repositories.TeamRepository;
 import br.com.trier.springvespertino.services.exceptions.ObjectNotFound;
 import br.com.trier.springvespertino.services.impl.PilotServiceImpl;
-import br.com.trier.springvespertino.services.impl.TeamServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,8 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -56,18 +55,33 @@ class PilotServiceTest {
 
     @Test
     public void testListAllNotFound() {
-        // Cenário
         List<Pilot> emptyList = new ArrayList<>();
-
-        // Mock do repositório
         when(pilotRepository.findAll()).thenReturn(emptyList);
-
-        // Execução do método a ser testado e verificação da exceção esperada
         Assertions.assertThrows(ObjectNotFound.class, () -> {
             pilotService.listAll();
         });
-
         verify(pilotRepository, times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("Teste deletar Piloto")
+    void deletePilotTest() {
+        Pilot pilot = new Pilot(1, "pilot", new Country(1, "Brasil"), new Team(20, "team"));
+        when(pilotRepository.findById(1)).thenReturn(Optional.of(pilot));
+        pilotService.delete(1);
+        verify(pilotRepository, times(1)).delete(any(Pilot.class));
+    }
+
+    @Test
+    @DisplayName("Teste atualizar piloto")
+    void updateTeamTest() {
+        Pilot pilotToUpdate = new Pilot(1, "Luiz", new Country(1, "Brasil"), new Team(20, "team"));
+        when(pilotRepository.findById(1)).thenReturn(Optional.of(pilotToUpdate));
+        when(pilotRepository.save(pilotToUpdate)).thenReturn(pilotToUpdate);
+        Pilot updatedPilot = pilotService.update(pilotToUpdate);
+        Assertions.assertEquals("Luiz", updatedPilot.getName());
+        verify(pilotRepository, times(1)).findById(1);
+        verify(pilotRepository, times(1)).save(pilotToUpdate);
     }
 
 }
